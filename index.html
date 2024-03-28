@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>cinema</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <script src="https://unpkg.com/riot@9.1.3/riot+compiler.min.js"></script>
+    <script src="js/home.riot" type="riot"></script>
+    <script src="js/model.js"></script>
+
+</head>
+
+<body>
+    <header>
+        <section class="hero is-small is-danger">
+            <div class="hero-body">
+                <div class="container">
+                    <nav class="navbar is-danger">
+                        <div class="navbar-brand" <a class="home" href="">
+                            <div class="logo">
+                                <img src="img/cat.png" alt="logo" width="60" height="60">
+                            </div>
+                            </a>
+                        </div>
+                        <div class="navbar-menu">
+                            <li class="navbar-item has-dropdown is-hoverable">
+                                <a class="navbar-link" href="">Films</a>
+                                <div class="navbar-dropdown">
+                                    <a class="navbar-item" href="">Populaire</a>
+                                    <a class="navbar-item" href="">Du moment</a>
+                                    <a class="navbar-item" href="">A venir</a>
+                                    <a class="navbar-item" href="">Les mieux notés</a>
+                                </div>
+                            </li>
+                            <li class="navbar-item has-dropdown is-hoverable">
+                                <a class="navbar-link" href="">Séries</a>
+                                <div class="navbar-dropdown">
+                                    <a class="navbar-item" href="">Populaire</a>
+                                    <a class="navbar-item" href="">Diffusées aujourd'hui</a>
+                                    <a class="navbar-item" href="">Diffusées en ce moment</a>
+                                    <a class="navbar-item" href="">Les mieux notés</a>
+                                </div>
+                            </li>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </section>
+    </header>
+
+    <home />
+
+    <script>
+        (async function () {
+            await riot.compile()
+            riot.mount('home')
+        })()
+    </script>
+
+
+</body>
+
+</html>

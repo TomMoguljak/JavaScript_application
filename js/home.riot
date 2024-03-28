@@ -1,0 +1,62 @@
+<home>
+
+    <section class="section">
+        <div class="search">
+            <form id="search" action="" method="get">
+                <div class="field">
+                    <div class="control">
+                        <label>
+                            <input class="input is-rounded is-danger" type="search" name="search"
+                                placeholder="Rechercher un film, une émission télévisée, un artiste...">
+                        </label>
+                        <input class="button is-danger is-rounded" type="submit" value="Rechercher">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="section">
+        <div each={item in this.state.trending} class="column is-one-quarter">
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image is-4by3">
+                        <img url="https://image.tmdb.org/t/p/original/{item['poster_path']}" alt="Placeholder image">
+                    </figure>
+                </div>
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">{item['title']}</p>
+                            <p class="subtitle is-6">{item['release_date']}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        export default function home(){
+            return {
+                async onBeforeMount(props, state) {
+                    this.state = {
+                        movies: props.movies,
+                        series: props.series,
+                        text: '',
+                        trending: []
+                    }
+                    await this.getTrending()
+            },
+
+            async getTrending() {
+                let api = apiModel()
+                let trending = await api.getTrending()
+                this.state.trending = trending
+                this.update()
+            }
+        }
+    }
+    </script>
+</home>
