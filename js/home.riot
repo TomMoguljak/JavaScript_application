@@ -17,46 +17,68 @@
     </section>
 
     <section class="section">
-        <div each={item in this.state.trending} class="column is-one-quarter">
-            <div class="card">
-                <div class="card-image">
-                    <figure class="image is-4by3">
-                        <img url="https://image.tmdb.org/t/p/original/{item['poster_path']}" alt="Placeholder image">
-                    </figure>
-                </div>
-                <div class="card-content">
-                    <div class="media">
-                        <div class="media-content">
-                            <p class="title is-4">{item['title']}</p>
-                            <p class="subtitle is-6">{item['release_date']}</p>
+        <div each="{item in this.state.trending}" class="column is-one-third">
+            <template if="{item['media_type']=='movie'}">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image">
+                            <img src="https://image.tmdb.org/t/p/original/{item['poster_path']}"
+                                alt="Placeholder image">
+                        </figure>
+                    </div>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <p class="title is-4">{item['title']}</p>
+                                <p class="subtitle is-6">{item['release_date']}</p>
+                                <p class="subtitle is-6">{item['vote_average']}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </template>
+
+            <template if="{item['media_type']=='tv'}">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image">
+                            <img src="https://image.tmdb.org/t/p/original/{item['poster_path']}"
+                                alt="Placeholder image">
+                        </figure>
+                    </div>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <p class="title is-4">{item['name']}</p>
+                                <p class="subtitle is-6">{item['first_air_date']}</p>
+                                <p class="subtitle is-6">{item['vote_average']}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
         </div>
     </section>
 
 
     <script>
-        export default function home(){
+        export default function home() {
             return {
                 async onBeforeMount(props, state) {
                     this.state = {
-                        movies: props.movies,
-                        series: props.series,
-                        text: '',
-                        trending: []
+                        trending: [],
                     }
                     await this.getTrending()
-            },
+                },
 
-            async getTrending() {
-                let api = apiModel()
-                let trending = await api.getTrending()
-                this.state.trending = trending
-                this.update()
+                async getTrending() {
+                    let api = apiModel()
+                    let trending = await api.getTrending()
+                    this.state['trending'] = trending['results']
+                    this.update()
+                }
             }
         }
-    }
     </script>
 </home>
