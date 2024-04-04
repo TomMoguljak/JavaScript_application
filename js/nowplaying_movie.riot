@@ -1,0 +1,59 @@
+<nowplaying_movie>
+
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Les films du moment</h1>
+        </div>
+        <div each="{item in this.state.nowplaying[this.state.nowplaying['page']]}" class="column is-one-third">
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image">
+                        <img src="https://image.tmdb.org/t/p/original/{item['poster_path']}" alt="Placeholder image">
+                    </figure>
+                </div>
+
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">{item['title']}</p>
+                            <p class="subtitle is-6">{item['release_date']}</p>
+                            <p class="subtitle is-6">{item['vote_average']}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="page-navigation">
+        <button class="button is-primary"
+            onclick="{() => this.getNowPlayingMovies(this.state.nowplaying['page'] - 1)}">Previous</button>
+        <p>Page {this.state.nowplaying['page']} of {this.state.nowplaying['total_pages']}</p>
+        <button class="button is-primary"
+            onclick="{() => this.getNowPlayingMovies(this.state.nowplaying['page'] + 1)}">Next</button>
+    </div>
+
+    <script>
+        export default function nowplaying_movie() {
+            return {
+                async onBeforeMount(props, state) {
+                    this.state = {
+                        nowplaying: [],
+                        page_index: 1
+                    }
+                    await this.getNowPlayingMovies(this.state.page_index)
+                },
+
+                async getNowPlayingMovies(page_index) {
+                    let api = apiModel()
+                    let nowplaying = await api.getNowPlayingMovies(page_index)
+                    this.state.nowplaying['total_pages'] = nowplaying['total_pages']
+                    this.state.nowplaying['page'] = page_index
+                    this.state.nowplaying[this.state.nowplaying['page']] = nowplaying['results']
+                    this.update()
+                }
+            }
+        }
+    </script>
+
+</nowplaying_movie>

@@ -1,0 +1,51 @@
+<app>
+    <router base={base}>
+        <head_custom></head_custom>
+
+        <route path="(#)?/">
+            <home></home>
+        </route>
+
+        <route path="#/movie/:tag?">
+            <popular_movie tag="{route.params.tag||'popular'}"></popular_movie>
+        </route>
+
+        <route path="#/movie/now_playing">
+            <nowplaying_movie></nowplaying_movie>
+        </route>
+
+        <route path="#/movie/upcoming">
+            <upcoming_movie></upcoming_movie>
+        </route>
+
+        <route path="#/movie/top_rated">
+            <toprated_movie></toprated_movie>
+        </route>
+
+        <route path="#/tv/:tag?">
+            <popular_serie tag="{route.params.tag||'popular'}"></popular_serie>
+        </route>
+
+        <route path="#/tv/airing_today">
+            <airingtoday_serie></airingtoday_serie>
+        </route>
+
+        <route path="#/tv/on_the_air">
+            <ontheair_serie></ontheair_serie>
+        </route>
+
+        <route path="#/tv/top_rated">
+            <toprated_serie></toprated_serie>
+        </route>
+
+    </router>
+
+    <script>
+
+        export default function app() {
+            base: 'https://grond.iut-fbleau.fr/moguljak/cinema/'
+        };
+
+    </script>
+
+</app>
