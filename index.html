@@ -28,14 +28,12 @@
     <app />
 
     <script>
-        (async function () {
-            riot.register('router', route.Router);
-            riot.register('route', route.Route);
+        riot.register('router', route.Router);
+        riot.register('route', route.Route);
 
-            await riot.compile().then(() => {
-                riot.mount('app')
-            })
-        })()
+        riot.compile().then(() => {
+            riot.mount('app');
+        });
 
     </script>
 

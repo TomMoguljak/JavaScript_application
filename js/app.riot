@@ -2,12 +2,12 @@
     <router base={base}>
         <head_custom></head_custom>
 
-        <route path="(#)?/">
+        <route path="(#)?">
             <home></home>
         </route>
 
-        <route path="#/movie/:tag?">
-            <popular_movie tag="{route.params.tag||'popular'}"></popular_movie>
+        <route path="#/movie/popular">
+            <popular_movie></popular_movie>
         </route>
 
         <route path="#/movie/now_playing">
@@ -22,8 +22,8 @@
             <toprated_movie></toprated_movie>
         </route>
 
-        <route path="#/tv/:tag?">
-            <popular_serie tag="{route.params.tag||'popular'}"></popular_serie>
+        <route path="#/tv/popular">
+            <popular_serie></popular_serie>
         </route>
 
         <route path="#/tv/airing_today">
@@ -42,7 +42,7 @@
 
     <script>
 
-        export default function app() {
+        export default {
             base: 'https://dwarves.iut-fbleau.fr/~moguljak/cinema/'
         };
 
