@@ -5,23 +5,26 @@
             <h1 class="title">Les films populaires</h1>
         </div>
         <div each="{item in this.state.popular[this.state.popular['page']]}" class="column is-one-third">
-            <div class="card">
-                <div class="card-image">
-                    <figure class="image">
-                        <img src="https://image.tmdb.org/t/p/original/{item['poster_path']}" alt="Placeholder image">
-                    </figure>
-                </div>
+            <a href="#/movie/{item['id']}">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image">
+                            <img src="https://image.tmdb.org/t/p/original/{item['poster_path']}"
+                                alt="Placeholder image">
+                        </figure>
+                    </div>
 
-                <div class="card-content">
-                    <div class="media">
-                        <div class="media-content">
-                            <p class="title is-4">{item['title']}</p>
-                            <p class="subtitle is-6">{item['release_date']}</p>
-                            <p class="subtitle is-6">{item['vote_average']}</p>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <p class="title is-4">{item['title']}</p>
+                                <p class="subtitle is-6">{item['release_date']}</p>
+                                <p class="subtitle is-6">{item['vote_average']}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 

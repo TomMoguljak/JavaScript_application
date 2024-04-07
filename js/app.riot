@@ -22,6 +22,10 @@
             <toprated_movie></toprated_movie>
         </route>
 
+        <route path="#/movie/:id">
+            <movie id={route.params.id}></movie>
+        </route>
+
         <route path="#/tv/popular">
             <popular_serie></popular_serie>
         </route>
@@ -36,6 +40,14 @@
 
         <route path="#/tv/top_rated">
             <toprated_serie></toprated_serie>
+        </route>
+
+        <route path="#/tv/:id">
+            <serie id={route.params.id}></serie>
+        </route>
+
+        <route path="#/person/:id">
+            <person id={route.params.id}></person>
         </route>
 
     </router>

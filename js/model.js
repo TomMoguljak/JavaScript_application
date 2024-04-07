@@ -4,7 +4,8 @@ function apiModel() {
 
     let command = {
         getTrending, search, getPopularMovies, getNowPlayingMovies, getUpcomingMovies, getTopRatedMovies, getMovieByID,
-        getSerieByID, getPopularSeries, getAiringTodaySeries, getOnTheAirSeries, getTopRatedSeries
+        getSerieByID, getPopularSeries, getAiringTodaySeries, getOnTheAirSeries, getTopRatedSeries, getPersonByID, getMovieCreditsByID,
+        getSerieCreditsByID, getPersonMovieCreditsByID, getPersonSerieCreditsByID, getSerieCreditsByID
     }
 
     async function getTrending() {
@@ -14,19 +15,49 @@ function apiModel() {
     }
 
     async function search(input, page_index) {
-        return fetch(`${url}search/multi?query=${input}&api_key=${apikey}&page=${page_index}&language=fr`)
+        return fetch(`${url}search/multi?query=${input}&include_adult=false&api_key=${apikey}&page=${page_index}&language=fr`)
             .then(response => response.json())
             .catch(err => console.error(err));
     }
 
-    async function getMovieByID(movie_id) {
-        return fetch(`${url}movie/${movie_id}?api_key=${apikey}&language=fr`)
+    async function getPersonByID(id) {
+        return fetch(`${url}person/${id}?api_key=${apikey}&language=fr`)
             .then(response => response.json())
             .catch(err => console.error(err));
     }
 
-    async function getSerieByID(series_id) {
-        return fetch(`${url}tv/${series_id}?api_key=${apikey}&language=fr`)
+    async function getPersonMovieCreditsByID(id) {
+        return fetch(`${url}person/${id}/movie_credits?api_key=${apikey}&language=fr`)
+            .then(response => response.json())
+            .catch(err => console.error(err));
+    }
+
+    async function getPersonSerieCreditsByID(id) {
+        return fetch(`${url}person/${id}/tv_credits?api_key=${apikey}&language=fr`)
+            .then(response => response.json())
+            .catch(err => console.error(err));
+    }
+
+    async function getMovieByID(id) {
+        return fetch(`${url}movie/${id}?api_key=${apikey}&language=fr`)
+            .then(response => response.json())
+            .catch(err => console.error(err));
+    }
+
+    async function getMovieCreditsByID(id) {
+        return fetch(`${url}movie/${id}/credits?api_key=${apikey}&language=fr`)
+            .then(response => response.json())
+            .catch(err => console.error(err));
+    }
+
+    async function getSerieByID(id) {
+        return fetch(`${url}tv/${id}?api_key=${apikey}&language=fr`)
+            .then(response => response.json())
+            .catch(err => console.error(err));
+    }
+
+    async function getSerieCreditsByID(id) {
+        return fetch(`${url}tv/${id}/credits?api_key=${apikey}&language=fr`)
             .then(response => response.json())
             .catch(err => console.error(err));
     }

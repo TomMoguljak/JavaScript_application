@@ -1,0 +1,89 @@
+<person>
+
+    <section class="section">
+        <div class="column is-one-third">
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image">
+                        <img src="https://image.tmdb.org/t/p/original/{this.state.person['profile_path']}"
+                            alt="Placeholder image">
+                    </figure>
+                </div>
+
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">{this.state.person['name']}</p>
+                            <p class="subtitle is-6">{this.state.person['birthday']}</p>
+                            <template if="{this.state.person['deathday']} != null">
+                                <p class="subtitle is-6">{this.state.person['deathday']}</p>
+                            </template>
+                            <p class="subtitle is-6">Lieu de naissance: {this.state.person['place_of_birth']}</p>
+                        </div>
+                    </div>
+
+                    <div class="content">
+                        <p>{this.state.person['biography']}</p>
+                        <p>Popularité: {this.state.person['popularity']}</p>
+                        <p class="title is-4">Filmographie</p>
+                        <div each="{item in this.state.movie_credit}" class="column is-one-third">
+                            <a href="#/movie/{item['id']}">
+                                <p>{item['title']}</p>
+                                <p>{item['release_date']}</p>
+                                <p>{item['character']}</p>
+                            </a>
+                        </div>
+
+                        <p class="title is-4">Série</p>
+                        <div each="{item in this.state.serie_credit}" class="column is-one-third">
+                            <a href="#/tv/{item['id']}">
+                                <p>{item['name']}</p>
+                                <p>{item['first_air_date']}</p>
+                                <p>{item['character']}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        export default function person() {
+            return {
+                async onBeforeMount(props, state) {
+                    this.state = {
+                        person: [],
+                        id: props.id
+                    }
+                    await this.getPersonByID(this.state.id),
+                        await this.getPersonMovieCreditsByID(this.state.id)
+                    await this.getPersonSerieCreditsByID(this.state.id)
+                },
+
+                async getPersonByID(id) {
+                    let api = apiModel()
+                    let person = await api.getPersonByID(id)
+                    this.state['person'] = person
+                    this.update()
+                },
+
+                async getPersonMovieCreditsByID(id) {
+                    let api = apiModel()
+                    let credit = await api.getPersonMovieCreditsByID(id)
+                    this.state['movie_credit'] = credit['cast']
+                    this.update()
+                },
+
+                async getPersonSerieCreditsByID(id) {
+                    let api = apiModel()
+                    let credit = await api.getPersonSerieCreditsByID(id)
+                    this.state['serie_credit'] = credit['cast']
+                    this.update()
+                }
+            }
+        }
+    </script>
+
+</person>
