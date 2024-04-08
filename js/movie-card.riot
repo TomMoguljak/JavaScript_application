@@ -1,0 +1,11 @@
+<movie-card class="card">
+    <a href="{`#/movie/${this.props.movie.id}`}">
+        <img src="{`https://image.tmdb.org/t/p/w500${this.props.movie.poster_path}`}" alt="{this.props.movie.title}" />
+        <card-info>
+            <card-title>{this.props.movie.title}</card-title>
+            <card-date>{this.props.movie.release_date}</card-date>
+            <card-spacer />
+            <vote average="{this.props.movie.vote_average}" count="{this.props.movie.vote_count}" />
+        </card-info>
+    </a>
+</movie-card>

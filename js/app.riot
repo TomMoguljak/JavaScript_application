@@ -1,63 +1,70 @@
-<app>
-    <router base={base}>
-        <head_custom></head_custom>
-
-        <route path="(#)?">
-            <home></home>
-        </route>
-
-        <route path="#/movie/popular">
-            <popular_movie></popular_movie>
-        </route>
-
-        <route path="#/movie/now_playing">
-            <nowplaying_movie></nowplaying_movie>
-        </route>
-
-        <route path="#/movie/upcoming">
-            <upcoming_movie></upcoming_movie>
-        </route>
-
-        <route path="#/movie/top_rated">
-            <toprated_movie></toprated_movie>
-        </route>
-
-        <route path="#/movie/:id">
-            <movie id={route.params.id}></movie>
-        </route>
-
-        <route path="#/tv/popular">
-            <popular_serie></popular_serie>
-        </route>
-
-        <route path="#/tv/airing_today">
-            <airingtoday_serie></airingtoday_serie>
-        </route>
-
-        <route path="#/tv/on_the_air">
-            <ontheair_serie></ontheair_serie>
-        </route>
-
-        <route path="#/tv/top_rated">
-            <toprated_serie></toprated_serie>
-        </route>
-
-        <route path="#/tv/:id">
-            <serie id={route.params.id}></serie>
-        </route>
-
-        <route path="#/person/:id">
-            <person id={route.params.id}></person>
-        </route>
-
-    </router>
-
+<app class="content">
     <script>
-
         export default {
             base: 'https://dwarves.iut-fbleau.fr/~moguljak/cinema/'
         };
-
     </script>
 
+    <app-header />
+
+    <router base={base}>
+        <route path="(#)?">
+            <home />
+        </route>
+
+        <route path="#/home/:page">
+            <home page="{route.params.page}" />
+        </route>
+
+        <route path="#/movies/popular/:page">
+            <movies type="popular" page="{route.params.page}" />
+        </route>
+
+        <route path="#/movies/top-rated/:page">
+            <movies type="top-rated" page="{route.params.page}" />
+        </route>
+
+        <route path="#/movies/now-playing/:page">
+            <movies type="now-playing" page="{route.params.page}" />
+        </route>
+
+        <route path="#/movies/upcoming/:page">
+            <movies type="upcoming" page="{route.params.page}" />
+        </route>
+
+        <route path="#/movie/:id">
+            <movie id="{route.params.id}" />
+        </route>
+
+        <route path="#/show/:id">
+            <show id="{route.params.id}" />
+        </route>
+
+        <route path="#/person/:id">
+            <person id="{route.params.id}" />
+        </route>
+
+        <route path="#/search/:type/:query/:page">
+            <search type="{route.params.type}" query="{decodeURIComponent(route.params.query)}"
+                page="{route.params.page}" />
+        </route>
+
+        <route path="#/shows/popular/:page">
+            <shows type="popular" page="{route.params.page}" />
+        </route>
+
+        <route path="#/shows/top-rated/:page">
+            <shows type="top-rated" page="{route.params.page}" />
+        </route>
+
+        <route path="#/shows/on-the-air/:page">
+            <shows type="on-the-air" page="{route.params.page}" />
+        </route>
+
+        <route path="#/shows/airing-today/:page">
+            <shows type="airing-today" page="{route.params.page}" />
+        </route>
+    </router>
+
+    <div></div>
 </app>

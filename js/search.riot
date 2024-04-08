@@ -1,0 +1,125 @@
+<search class="content scaled">
+    <style>
+        search-results {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            width: 100%;
+
+            flex-grow: 1;
+        }
+
+        search-categories {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 420px;
+        }
+
+        search-categories a {
+            background-color: var(--primary-color);
+            color: var(--foreground-color);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 12px 24px;
+            text-decoration: none;
+        }
+
+        search-categories a:hover {
+            background-color: var(--accent-color);
+        }
+
+        search-categories a.active {
+            background-color: var(--accent-color);
+        }
+
+        seach-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-grow: 1;
+        }
+    </style>
+
+    <script>
+        export default {
+            async onBeforeMount() {
+                this.state = {
+                    query: this.props.query,
+
+                    page: this.props.page,
+                    pages: 1,
+
+                    results: [],
+                    error: "Loading...",
+                };
+
+                this.fetchResults();
+            },
+
+            async fetchResults() {
+                api.search(this.props.type, this.props.query, this.state.page).then(response => {
+                    this.state.pages = response.total_pages;
+                    this.state.results = response.results;
+
+                    if (this.state.results.length === 0) {
+                        this.state.error = "No results found.";
+                    } else {
+                        this.state.error = null;
+                    }
+
+                    this.update();
+                }).catch(error => {
+                    this.state.results = [];
+
+                    this.state.error = error.toString();
+                    this.update();
+                });
+            },
+
+            onPageChange(page) {
+                window.location.hash = `#/search/${this.props.type}/${encodeURIComponent(this.props.query)}/${page}`;
+                this.state.page = page;
+                window.scrollTo(0, 0);
+
+                this.update();
+
+                this.fetchResults();
+            },
+
+            switchType(type) {
+                window.location.hash = `#/search/${type}/${encodeURIComponent(this.props.query)}/1`;
+                window.location.reload();
+            }
+        }
+    </script>
+
+    <pager page="{this.state.page}" pages="{this.state.pages}" onpagechange="{this.onPageChange}" />
+
+
+    <search-results>
+        <search-categories>
+            <a onclick="{() => this.switchType('movies')}" class="{this.props.type === 'movies' ? 'active' : ''}">Movies</a>
+            <a onclick="{() => this.switchType('shows')}" class="{this.props.type === 'shows' ? 'active' : ''}">Shows</a>
+            <a onclick="{() => this.switchType('people')}" class="{this.props.type === 'people' ? 'active' : ''}">People</a>
+        </search-categories>
+
+        <seach-content>
+            <error if="{this.state.error}" message="{this.state.error}" />
+
+            <card-list if="{this.state.results.length > 0 && this.props.type === 'movies'}">
+                <movie-card each="{movie in this.state.results}" movie="{movie}" />
+            </card-list>
+
+            <card-list if="{this.state.results.length > 0 && this.props.type === 'shows'}">
+                <show-card each="{show in this.state.results}" show="{show}" />
+            </card-list>
+
+            <card-list if="{this.state.results.length > 0 && this.props.type === 'people'}">
+                <person-card each="{person in this.state.results}" person="{person}" />
+            </card-list>
+        </seach-content>
+    </search-results>
+
+    <pager page="{this.state.page}" pages="{this.state.pages}" onpagechange="{this.onPageChange}" />
+</search>

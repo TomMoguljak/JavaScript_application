@@ -1,0 +1,11 @@
+<show-card class="card">
+    <a href="{`#/show/${this.props.show.id}`}">
+        <img src="{`https://image.tmdb.org/t/p/w500${this.props.show.poster_path}`}" alt="{this.props.show.title}" />
+        <card-info>
+            <card-title>{this.props.show.name}</card-title>
+            <card-date>{this.props.show.first_air_date}</card-date>
+            <card-spacer />
+            <vote average="{this.props.show.vote_average}" count="{this.props.show.vote_count}" />
+        </card-info>
+    </a>
+</show-card>

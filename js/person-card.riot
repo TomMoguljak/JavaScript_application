@@ -1,0 +1,12 @@
+<person-card class="card">
+    <a href="{`#/person/${this.props.person.id}`}">
+        <img src="{`https://image.tmdb.org/t/p/w500${this.props.person.profile_path}`}" alt="{this.props.person.name}" />
+        <card-info>
+            <card-title>{this.props.person.name}</card-title>
+            <card-spacer />
+            <div if="{this.props.person.known_for}">
+                <p>Known for '{this.props.person.known_for.reduce((a, b) => a.vote_count > b.vote_count ? a : b).title}'</p>
+            </div>
+        </card-info>
+    </a>
+</person-card>

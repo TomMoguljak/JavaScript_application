@@ -1,0 +1,54 @@
+<movies class="content scaled">
+    <script>
+        export default {
+            async onBeforeMount() {
+                this.state = {
+                    type: this.props.type,
+
+                    page: this.props.page,
+                    pages: 1,
+
+                    movies: [],
+                    error: "Loading...",
+                };
+
+                this.fetchMovies();
+            },
+
+            async fetchMovies() {
+                api.fetchMovies(this.props.type, this.state.page).then(response => {
+                    this.state.pages = response.total_pages;
+                    this.state.movies = response.results;
+
+                    this.state.error = null;
+                    this.update();
+                }).catch(error => {
+                    this.state.movies = [];
+
+                    this.state.error = error.toString();
+                    this.update();
+                });
+            },
+
+            onPageChange(page) {
+                window.location.hash = `#/movies/${this.props.type}/${page}`;
+                this.state.page = page;
+                window.scrollTo(0, 0);
+
+                this.update();
+
+                this.fetchMovies();
+            }
+        }
+    </script>
+
+    <pager page="{this.state.page}" pages="{this.state.pages}" onpagechange="{this.onPageChange}" />
+
+    <error if="{this.state.error}" message="{this.state.error}" />
+
+    <card-list if="{this.state.movies.length > 0}">
+        <movie-card each="{movie in this.state.movies}" movie="{movie}" />
+    </card-list>
+
+    <pager page="{this.state.page}" pages="{this.state.pages}" onpagechange="{this.onPageChange}" />
+</movies>

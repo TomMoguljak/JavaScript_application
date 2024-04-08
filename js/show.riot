@@ -1,0 +1,111 @@
+<show class="content scaled">
+    <style>
+        img.full-width {
+            width: 100%;
+        }
+
+        show .content {
+            display: flex;
+            flex-direction: row;
+            align-items: start;
+            
+            margin-top: 32px;
+            gap: 32px;
+        }
+
+        show-details {
+            display: flex;
+            flex-direction: row;
+        }
+
+        show-spacer {
+            flex-grow: 1;
+        }
+    </style>
+
+    <script>
+        export default {
+            async onBeforeMount() {
+                this.state = {
+                    id: this.props.id,
+                    show: null,
+                    credits: null,
+                    error: "Loading...",
+                };
+
+                this.fetchShow();
+                this.fetchCredits();
+            },
+
+            async fetchShow() {
+                api.fetchShow(this.props.id).then(response => {
+                    this.state.show = response;
+                    this.state.error = null;
+                    this.update();
+                }).catch(error => {
+                    this.state.show = null;
+
+                    this.state.error = error.toString();
+                    this.update();
+                });
+            },
+
+            async fetchCredits() {
+                api.fetchShowCredits(this.props.id).then(response => {
+                    this.state.credits = response;
+                    this.state.error = null;
+                    this.update();
+                }).catch(error => {
+                    this.state.credits = null;
+
+                    this.state.error = error.toString();
+                    this.update();
+                });
+            }
+        }
+    </script>
+
+    <error if="{this.state.error}" message="{this.state.error}" />
+
+    <div if="{this.state.show}">
+        <img class="full-width" src="{`https://image.tmdb.org/t/p/w1280${this.state.show.backdrop_path}`}"
+            alt="{this.state.show.title}" />
+
+        <div class="content">
+            <div>
+                <img src="{`https://image.tmdb.org/t/p/w500${this.state.show.poster_path}`}"
+                    alt="{this.state.show.title}" />
+            </div>
+
+            <div>
+                <h1>{this.state.show.title}</h1>
+
+                <show-details>
+                    <vote average="{this.state.show.vote_average}" count="{this.state.show.vote_count}" />
+                    <show-spacer />
+                    <p>{this.state.show.first_air_date}</p>
+                </show-details>
+
+                <p>{this.state.show.overview}</p>
+
+                <p>Genres: {this.state.show.genres.map(genre => genre.name).join(", ")}</p>
+
+                <p>Seasons: {this.state.show.number_of_seasons}</p>
+
+                <p>Episodes: {this.state.show.number_of_episodes}</p>
+
+                <p>Production Companies: {this.state.show.production_companies.map(company => company.name).join(", ")}</p>
+
+                <p>Production Countries: {this.state.show.production_countries.map(country => country.name).join(", ")}</p>
+
+                <p>Spoken Languages: {this.state.show.spoken_languages.map(language => language.name).join(", ")}</p>
+            
+                <h2>Cast</h2>
+
+                <card-list if="{this.state.credits}">
+                    <person-card each="{person in this.state.credits.cast}" person="{person}"></person-card>
+                </card-list>
+            </div>
+        </div>
+    </div>
+</show>

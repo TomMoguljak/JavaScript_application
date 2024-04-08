@@ -1,0 +1,87 @@
+<pager>
+    <style>
+        pager {
+            --hover-color: #444;
+            --disabled-color: #101010;
+
+            display: flex;
+            justify-content: center;
+
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        pager button {
+            background-color: var(--primary-color);
+            border: none;
+
+            color: var(--foreground-color);
+            cursor: pointer;
+            font-size: 14px;
+
+            padding: 12px 20px;
+            min-width: 60px;
+        }
+
+        pager button:hover {
+            background-color: var(--hover-color);
+        }
+
+        pager button:disabled {
+            cursor: default;
+            background-color: var(--disabled-color);
+            color: var(--secondary-color);
+        }
+
+        pager button.active {
+            background-color: var(--accent-color);
+        }
+    </style>
+
+    <script>
+        export default {
+            firstPage() {
+                this.switchPage(1);
+            },
+
+            previousPage() {
+                this.switchPage(parseInt(this.props.page) - 1);
+            },
+
+            switchPage(page) {
+                this.update();
+
+                this.props.onpagechange(page);
+            },
+
+            nextPage() {
+                this.switchPage(parseInt(this.props.page) + 1);
+            },
+
+            lastPage() {
+                this.switchPage(this.props.pages);
+            },
+
+            visiblePages(visible) {
+                let start = Math.max(1, this.props.page - Math.floor(visible / 2));
+                let end = Math.min(this.props.pages, start + visible - 1);
+
+                if (end - start < visible - 1)
+                    start = Math.max(1, end - visible + 1);
+
+                return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+            }
+        }
+    </script>
+
+    <button disabled="{this.props.page == 1}" onclick="{firstPage}">&lt;&lt; First</button>
+    <button disabled="{this.props.page == 1}" onclick="{previousPage}">&lt; Previous</button>
+
+    <div each="{page in visiblePages(7)}">
+        <button class="{page == this.props.page ? 'active' : ''}"
+            onclick="{() => this.switchPage(page)}">{page}</button>
+    </div>
+
+    <button disabled="{this.props.page == this.props.pages}" onclick="{nextPage}">Next &gt;</button>
+    <button disabled="{this.props.page == this.props.pages}" onclick="{lastPage}">Last &gt;&gt;</button>
+</pager>

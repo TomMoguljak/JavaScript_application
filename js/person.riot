@@ -1,89 +1,133 @@
-<person>
+<person class="content scaled">
+    <style>
+        person-info {
+            display: flex;
+            flex-direction: row;
+            gap: 32px;
+            align-items: start;
+        }
 
-    <section class="section">
-        <div class="column is-one-third">
-            <div class="card">
-                <div class="card-image">
-                    <figure class="image">
-                        <img src="https://image.tmdb.org/t/p/original/{this.state.person['profile_path']}"
-                            alt="Placeholder image">
-                    </figure>
-                </div>
+        person-info div {
+            flex-grow: 1;
+        }
 
-                <div class="card-content">
-                    <div class="media">
-                        <div class="media-content">
-                            <p class="title is-4">{this.state.person['name']}</p>
-                            <p class="subtitle is-6">{this.state.person['birthday']}</p>
-                            <template if="{this.state.person['deathday']} != null">
-                                <p class="subtitle is-6">{this.state.person['deathday']}</p>
-                            </template>
-                            <p class="subtitle is-6">Lieu de naissance: {this.state.person['place_of_birth']}</p>
-                        </div>
-                    </div>
+        .credit {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
 
-                    <div class="content">
-                        <p>{this.state.person['biography']}</p>
-                        <p>Popularité: {this.state.person['popularity']}</p>
-                        <p class="title is-4">Filmographie</p>
-                        <div each="{item in this.state.movie_credit}" class="column is-one-third">
-                            <a href="#/movie/{item['id']}">
-                                <p>{item['title']}</p>
-                                <p>{item['release_date']}</p>
-                                <p>{item['character']}</p>
-                            </a>
-                        </div>
+            margin-top: 16px;
+        }
 
-                        <p class="title is-4">Série</p>
-                        <div each="{item in this.state.serie_credit}" class="column is-one-third">
-                            <a href="#/tv/{item['id']}">
-                                <p>{item['name']}</p>
-                                <p>{item['first_air_date']}</p>
-                                <p>{item['character']}</p>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        .credit a {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            align-items: center;
+            color: var(--foreground-color);
+            text-decoration: none;
+        }
 
+        .credit a span:nth-child(1) {
+            width: 32px;
+            padding: 4px;
+            text-align: center;
+
+            background-color: var(--primary-color);
+        }
+
+        .credit a div {
+            flex-grow: 1;
+        }
+    </style>
 
     <script>
-        export default function person() {
-            return {
-                async onBeforeMount(props, state) {
-                    this.state = {
-                        person: [],
-                        id: props.id
-                    }
-                    await this.getPersonByID(this.state.id),
-                        await this.getPersonMovieCreditsByID(this.state.id)
-                    await this.getPersonSerieCreditsByID(this.state.id)
-                },
+        export default {
+            async onBeforeMount() {
+                this.state = {
+                    id: this.props.id,
+                    person: null,
+                    movies: [],
+                    shows: [],
+                    error: "Loading...",
+                };
 
-                async getPersonByID(id) {
-                    let api = apiModel()
-                    let person = await api.getPersonByID(id)
-                    this.state['person'] = person
-                    this.update()
-                },
+                this.fetchPerson();
+                this.fetchMovies();
+                this.fetchShows();
+            },
 
-                async getPersonMovieCreditsByID(id) {
-                    let api = apiModel()
-                    let credit = await api.getPersonMovieCreditsByID(id)
-                    this.state['movie_credit'] = credit['cast']
-                    this.update()
-                },
+            async fetchMovies() {
+                api.fetchPersonMovies(this.props.id).then(response => {
+                    this.state.movies = response.cast;
+                    this.state.error = null;
+                    this.update();
+                }).catch(error => {
+                    this.state.movies = [];
+                    this.state.error = error.toString();
+                    this.update();
+                });
+            },
 
-                async getPersonSerieCreditsByID(id) {
-                    let api = apiModel()
-                    let credit = await api.getPersonSerieCreditsByID(id)
-                    this.state['serie_credit'] = credit['cast']
-                    this.update()
-                }
+            async fetchShows() {
+                api.fetchPersonShows(this.props.id).then(response => {
+                    this.state.shows = response.cast;
+                    this.state.error = null;
+                    this.update();
+                }).catch(error => {
+                    this.state.shows = [];
+                    this.state.error = error.toString();
+                    this.update();
+                });
+            },
+
+            async fetchPerson() {
+                api.fetchPerson(this.props.id).then(response => {
+                    this.state.person = response;
+                    this.state.error = null;
+                    this.update();
+                }).catch(error => {
+                    this.state.person = null;
+                    this.state.error = error.toString();
+                    this.update();
+                });
             }
         }
     </script>
 
+    <error if="{this.state.error}" message="{this.state.error}" />
+
+    <person-info if="{this.state.person}">
+        <div>
+            <img src="{`https://image.tmdb.org/t/p/w500${this.state.person.profile_path}`}"
+                alt="{this.state.person.name}" />
+            <b>Birthday:</b>
+            <p>{this.state.person.birthday}</p>
+            <b>Place of Birth:</b>
+            <p>{this.state.person.place_of_birth}</p>
+        </div>
+        <div>
+            <h1>{this.state.person.name}</h1>
+            <b>Biography:</b>
+            <p>{this.state.person.biography}</p>
+            <h1>Movie Credits:</h1>
+            <div class="credit">
+                <a each="{movie in this.state.movies}" href={`#/movie/${movie.id}`}>
+                    <span>{new Date(movie.release_date).getFullYear()}</span>
+                    <span>{movie.title}</span>
+                    <div></div>
+                    <span>As {movie.character}</span>
+                </a>
+            </div>
+            <h1>Show Credits:</h1>
+            <div class="credit">
+                <a each="{show in this.state.shows}" href={`#/show/${show.id}`}>
+                    <span>{new Date(show.first_air_date).getFullYear()}</span>
+                    <span>{show.name}</span>
+                    <div></div>
+                    <span>As {show.character}</span>
+                </a>
+            </div>
+        </div>
+    </person-info>
 </person>

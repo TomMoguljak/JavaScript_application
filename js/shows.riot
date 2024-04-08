@@ -1,0 +1,54 @@
+<shows class="content scaled">
+    <script>
+        export default {
+            async onBeforeMount() {
+                this.state = {
+                    type: this.props.type,
+
+                    page: this.props.page,
+                    pages: 1,
+
+                    shows: [],
+                    error: "Loading...",
+                };
+
+                this.fetchShows();
+            },
+
+            async fetchShows() {
+                api.fetchShows(this.props.type, this.state.page).then(response => {
+                    this.state.pages = response.total_pages;
+                    this.state.shows = response.results;
+
+                    this.state.error = null;
+                    this.update();
+                }).catch(error => {
+                    this.state.shows = [];
+
+                    this.state.error = error.toString();
+                    this.update();
+                });
+            },
+
+            onPageChange(page) {
+                window.location.hash = `#/shows/${this.props.type}/${page}`;
+                this.state.page = page;
+                window.scrollTo(0, 0);
+
+                this.update();
+
+                this.fetchShows();
+            }
+        }
+    </script>
+
+    <pager page="{this.state.page}" pages="{this.state.pages}" onpagechange="{this.onPageChange}" />
+
+    <error if="{this.state.error}" message="{this.state.error}" />
+
+    <card-list if="{this.state.shows.length > 0}">
+        <show-card each="{show in this.state.shows}" show="{show}" />
+    </card-list>
+
+    <pager page="{this.state.page}" pages="{this.state.pages}" onpagechange="{this.onPageChange}" />
+</shows>

@@ -1,74 +1,57 @@
-<home>
-
-    <section class="section">
-        <div class="container">
-            <h1 class="title">Les films et séries populaires</h1>
-        </div>
-        <div each="{item in this.state.trending}" class="column is-one-third">
-            <template if="{item['media_type']=='movie'}">
-                <a href="#/movie/{item['id']}">
-                    <div class="card">
-                        <div class="card-image">
-                            <figure class="image">
-                                <img src="https://image.tmdb.org/t/p/original/{item['poster_path']}"
-                                    alt="Placeholder image">
-                            </figure>
-                        </div>
-                        <div class="card-content">
-                            <div class="media">
-                                <div class="media-content">
-                                    <p class="title is-4">{item['title']}</p>
-                                    <p class="subtitle is-6">{item['release_date']}</p>
-                                    <p class="subtitle is-6">{item['vote_average']}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </template>
-
-            <template if="{item['media_type']=='tv'}">
-                <a href="#/tv/{item['id']}">
-                    <div class="card">
-                        <div class="card-image">
-                            <figure class="image">
-                                <img src="https://image.tmdb.org/t/p/original/{item['poster_path']}"
-                                    alt="Placeholder image">
-                            </figure>
-                        </div>
-                        <div class="card-content">
-                            <div class="media">
-                                <div class="media-content">
-                                    <p class="title is-4">{item['name']}</p>
-                                    <p class="subtitle is-6">{item['first_air_date']}</p>
-                                    <p class="subtitle is-6">{item['vote_average']}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </template>
-        </div>
-    </section>
-
+<home class="content scaled">
     <script>
-        export default function home() {
-            return {
-                async onBeforeMount(props, state) {
-                    this.state = {
-                        trending: []
-                    }
-                    await this.getTrending()
-                },
+        export default {
+            async onBeforeMount() {
+                this.state = {
+                    type: this.props.type,
+                    results: [],
 
-                async getTrending() {
-                    let api = apiModel()
-                    let trending = await api.getTrending()
-                    this.state['trending'] = trending['results']
-                    this.update()
-                }
+                    page: this.props.page || 1,
+                    pages: 1,
+
+                    error: "Loading...",
+                };
+
+                this.fetchTrending();
+            },
+
+            async fetchTrending() {
+                api.fetchTrending(this.state.page).then(response => {
+                    this.state.pages = response.total_pages;
+                    this.state.results = response.results;
+
+                    this.state.error = null;
+                    this.update();
+                }).catch(error => {
+                    this.state.results = [];
+
+                    this.state.error = error.toString();
+                    this.update();
+                });
+            },
+
+            onPageChange(page) {
+                window.location.hash = `#/home/${page}`;
+                this.state.page = page;
+                window.scrollTo(0, 0);
+
+                this.update();
+
+                this.fetchTrending();
             }
         }
     </script>
 
+    <pager page="{this.state.page}" pages="{this.state.pages}" onpagechange="{this.onPageChange}" />
+
+    <error if="{this.state.error}" message="{this.state.error}" />
+
+    <card-list if="{this.state.results.length > 0}">
+        <div each="{result in this.state.results}" style="display: flex;">
+            <movie-card if="{result.media_type === 'movie'}" movie="{result}" />
+            <show-card if="{result.media_type === 'tv'}" show="{result}" />
+        </div>
+    </card-list>
+
+    <pager page="{this.state.page}" pages="{this.state.pages}" onpagechange="{this.onPageChange}" />
 </home>
